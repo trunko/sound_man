@@ -1,0 +1,14 @@
+[package]
+name = "sound_man"
+version = "0.1.0"
+authors = ["Tom Trunko <tgtrunko@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+log = "0.4"
+log4rs = "0.9"
+kankyo = "0.3"
+
+[dependencies.serenity]
+features = ["cache", "framework", "standard_framework", "voice", "http", "rustls_backend"]
+version = "0.7"
