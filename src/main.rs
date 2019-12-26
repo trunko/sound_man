@@ -39,7 +39,8 @@ use serenity::prelude::*;
 use log::{error, info};
 
 use commands::{
-    deafen::*, join::*, leave::*, mute::*, ping::*, play::*, search::*, undeafen::*, unmute::*,
+    deafen::*, join::*, leave::*, mute::*, ping::*, play::*, search::*, stop::*, undeafen::*,
+    unmute::*,
 };
 
 struct VoiceManager;
@@ -59,7 +60,7 @@ impl EventHandler for Handler {
 group!({
     name: "general",
     options: {},
-    commands: [deafen, join, leave, mute, play, ping, search, undeafen, unmute]
+    commands: [deafen, join, leave, mute, play, ping, search, stop, undeafen, unmute]
 });
 
 fn main() {

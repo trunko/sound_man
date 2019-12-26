@@ -5,5 +5,6 @@ pub mod mute;
 pub mod ping;
 pub mod play;
 pub mod search;
+pub mod stop;
 pub mod undeafen;
 pub mod unmute;
