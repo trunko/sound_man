@@ -1,6 +1,6 @@
 use std::{env, fs::read_dir};
 
-use crate::{check_msg, VoiceManager};
+use crate::VoiceManager;
 
 use serenity::client::Context;
 
@@ -13,23 +13,16 @@ use serenity::{
 use log::{error, info};
 
 #[command]
-fn play(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
-    let sound = match args.single::<String>() {
-        Ok(sound) => sound,
-        Err(_) => {
-            check_msg(
-                msg.channel_id
-                    .say(&ctx.http, "Must provide a sound to a video or audio"),
-            );
+#[aliases("p")]
+fn play(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
+    msg.delete(&ctx).expect("Unable to delete message.");
 
-            return Ok(());
-        }
-    };
+    let sound = String::from(args.rest());
 
     let guild_id = match ctx.cache.read().guild_channel(msg.channel_id) {
         Some(channel) => channel.read().guild_id,
         None => {
-            error!("Error finding channel info");
+            error!("Error finding channel info.");
 
             return Ok(());
         }
@@ -55,12 +48,12 @@ fn play(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
                 }
             };
 
-            handler.play(source);
+            handler.play_only(source);
         } else {
             let mut path = match env::var("SOUND_PATH") {
                 Ok(path) => path,
                 Err(_) => {
-                    error!("No path defined for sound files");
+                    error!("No path defined for sound files.");
 
                     return Ok(());
                 }
@@ -73,12 +66,14 @@ fn play(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
                 let file = file.file_name().into_string().unwrap();
                 let file = file.split(".");
                 let file: Vec<&str> = file.collect();
-                info!("{}", file[0]);
+                if file[0].eq_ignore_ascii_case(&sound) {
+                    path.push_str(file[0]);
+                    path.push_str(".");
+                    path.push_str(file[1]);
+                }
             }
 
-            path.push_str(&sound);
-            path.push_str(".mp3");
-
+            println!("{}", path);
             info!("{}", path);
 
             let source = match voice::ffmpeg(path) {
@@ -90,12 +85,14 @@ fn play(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
                 }
             };
 
-            handler.play(source);
+            handler.play_only(source);
         }
 
+        println!("Playing: {}", sound);
         info!("Playing: {}", sound);
     } else {
-        info!("Not in a voice channel to play in");
+        println!("Not in a voice channel to play in.");
+        info!("Not in a voice channel to play in.");
     }
 
     Ok(())

@@ -10,7 +10,10 @@ use serenity::{
 use log::{error, info};
 
 #[command]
+#[aliases("l")]
 fn leave(ctx: &mut Context, msg: &Message) -> CommandResult {
+    msg.delete(&ctx).expect("Unable to delete message.");
+
     let guild_id = match ctx.cache.read().guild_channel(msg.channel_id) {
         Some(channel) => channel.read().guild_id,
         None => {
@@ -35,9 +38,10 @@ fn leave(ctx: &mut Context, msg: &Message) -> CommandResult {
     if has_handler {
         manager.remove(guild_id);
 
-        info!("Left voice channel");
+        println!("Left voice channel.");
+        info!("Left voice channel.");
     } else {
-        error!("Not in a voice channel");
+        error!("Not in a voice channel.");
     }
 
     Ok(())

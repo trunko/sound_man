@@ -10,9 +10,12 @@ use serenity::{
 use log::info;
 
 #[command]
-fn ping(context: &mut Context, msg: &Message) -> CommandResult {
+fn ping(ctx: &mut Context, msg: &Message) -> CommandResult {
+    msg.delete(&ctx).expect("Unable to delete message.");
+
+    println!("Ping!");
     info!("Ping!");
-    check_msg(msg.channel_id.say(&context.http, "Pong!"));
+    check_msg(msg.channel_id.say(&ctx.http, "Pong!"));
 
     Ok(())
 }

@@ -10,13 +10,16 @@ use serenity::{
 use log::{error, info};
 
 #[command]
+#[aliases("j")]
 fn join(ctx: &mut Context, msg: &Message) -> CommandResult {
+    msg.delete(&ctx).expect("Unable to delete message.");
+
     let guild = match msg.guild(&ctx.cache) {
         Some(guild) => guild,
         None => {
             check_msg(
                 msg.channel_id
-                    .say(&ctx.http, "Groups and DMs not supported"),
+                    .say(&ctx.http, "Groups and DMs not supported."),
             );
 
             return Ok(());
@@ -34,7 +37,7 @@ fn join(ctx: &mut Context, msg: &Message) -> CommandResult {
     let connect_to = match channel_id {
         Some(channel) => channel,
         None => {
-            info!("Not in a voice channel");
+            info!("Not in a voice channel.");
 
             return Ok(());
         }
@@ -49,9 +52,10 @@ fn join(ctx: &mut Context, msg: &Message) -> CommandResult {
     let mut manager = manager_lock.lock();
 
     if manager.join(guild_id, connect_to).is_some() {
+        println!("Joined: {}", connect_to);
         info!("Joined: {}", connect_to);
     } else {
-        error!("Error joining the channel");
+        error!("Error joining the channel.");
     }
 
     Ok(())

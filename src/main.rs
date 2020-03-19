@@ -38,10 +38,7 @@ use serenity::prelude::*;
 
 use log::{error, info};
 
-use commands::{
-    deafen::*, join::*, leave::*, mute::*, ping::*, play::*, search::*, stop::*, undeafen::*,
-    unmute::*,
-};
+use commands::{join::*, leave::*, ping::*, play::*, search::*, stop::*};
 
 struct VoiceManager;
 
@@ -53,6 +50,7 @@ struct Handler;
 
 impl EventHandler for Handler {
     fn ready(&self, _: Context, ready: Ready) {
+        println!("Connected as: {}", ready.user.name);
         info!("Connected as: {}", ready.user.name);
     }
 }
@@ -60,20 +58,20 @@ impl EventHandler for Handler {
 group!({
     name: "general",
     options: {},
-    commands: [deafen, join, leave, mute, play, ping, search, stop, undeafen, unmute]
+    commands: [join, leave, play, ping, search, stop]
 });
 
 fn main() {
-    kankyo::init().expect("Unable to load .env file");
+    kankyo::init().expect("Unable to load .env file.");
 
     log4rs::init_file("config/log4rs.yaml", Default::default()).unwrap();
 
     // Configure the client with your Discord bot token in the environment.
-    let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment");
+    let token = env::var("DISCORD_TOKEN").expect("Expected a token in the environment.");
 
-    let prefix = env::var("PREFIX").expect("Expected a prefix for commands in the environment");
+    let prefix = env::var("PREFIX").expect("Expected a prefix for commands in the environment.");
 
-    let mut client = Client::new(&token, Handler).expect("Err creating client");
+    let mut client = Client::new(&token, Handler).expect("Error creating client.");
 
     // Obtain a lock to the data owned by the client, and insert the client's
     // voice manager into it. This allows the voice manager to be accessible by
@@ -94,7 +92,7 @@ fn main() {
         .map_err(|why| error!("Client ended: {:?}", why));
 }
 
-/// Checks that a message successfully sent; if not, then logs why to stdout.
+/// Checks that a message successfully sent; if not, then logs why.
 fn check_msg(result: SerenityResult<Message>) {
     if let Err(why) = result {
         error!("Error sending message: {:?}", why);

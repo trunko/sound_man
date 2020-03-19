@@ -11,13 +11,16 @@ use serenity::{
 use log::{error, info};
 
 #[command]
+#[aliases("yt", "youtube", "y")]
 fn search(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
+    msg.delete(&ctx).expect("Unable to delete message.");
+
     let search = match args.single::<String>() {
         Ok(search) => search,
         Err(_) => {
             check_msg(
                 msg.channel_id
-                    .say(&ctx.http, "Must provide a search to a video or audio"),
+                    .say(&ctx.http, "Must provide a search to a video or audio."),
             );
 
             return Ok(());
@@ -27,7 +30,7 @@ fn search(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
     let guild_id = match ctx.cache.read().guild_channel(msg.channel_id) {
         Some(channel) => channel.read().guild_id,
         None => {
-            error!("Error finding channel info");
+            error!("Error finding channel info.");
 
             return Ok(());
         }
@@ -52,11 +55,13 @@ fn search(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
             }
         };
 
-        handler.play(source);
+        handler.play_only(source);
 
+        println!("Playing: {}", search);
         info!("Playing: {}", search);
     } else {
-        info!("Not in a voice channel to play in");
+        println!("Not in a voice channel to play in.");
+        info!("Not in a voice channel to play in.");
     }
 
     Ok(())
