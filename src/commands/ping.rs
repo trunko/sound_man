@@ -11,6 +11,8 @@ use log::info;
 
 #[command]
 fn ping(ctx: &mut Context, msg: &Message) -> CommandResult {
+    println!();
+
     msg.delete(&ctx).expect("Unable to delete message.");
 
     println!("Ping!");

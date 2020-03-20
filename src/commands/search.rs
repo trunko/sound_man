@@ -13,6 +13,8 @@ use log::{error, info};
 #[command]
 #[aliases("yt", "youtube", "y")]
 fn search(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
+    println!();
+
     msg.delete(&ctx).expect("Unable to delete message.");
 
     let search = match args.single::<String>() {

@@ -2,3 +2,5 @@
 **/*.rs.bk
 .env
 /logs
+/config/entrance
+/config/exit

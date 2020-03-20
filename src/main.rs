@@ -38,7 +38,7 @@ use serenity::prelude::*;
 
 use log::{error, info};
 
-use commands::{join::*, leave::*, ping::*, play::*, search::*, stop::*};
+use commands::{entrance::*, exit::*, join::*, leave::*, ping::*, play::*, search::*, stop::*};
 
 struct VoiceManager;
 
@@ -58,7 +58,7 @@ impl EventHandler for Handler {
 group!({
     name: "general",
     options: {},
-    commands: [join, leave, play, ping, search, stop]
+    commands: [entrance, exit, join, leave, play, ping, search, stop]
 });
 
 fn main() {

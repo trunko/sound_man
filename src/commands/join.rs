@@ -12,6 +12,8 @@ use log::{error, info};
 #[command]
 #[aliases("j")]
 fn join(ctx: &mut Context, msg: &Message) -> CommandResult {
+    println!();
+
     msg.delete(&ctx).expect("Unable to delete message.");
 
     let guild = match msg.guild(&ctx.cache) {
@@ -51,9 +53,9 @@ fn join(ctx: &mut Context, msg: &Message) -> CommandResult {
         .expect("Expected VoiceManager in ShareMap.");
     let mut manager = manager_lock.lock();
 
-    if manager.join(guild_id, connect_to).is_some() {
-        println!("Joined: {}", connect_to);
-        info!("Joined: {}", connect_to);
+    if let Some(_) = manager.join(guild_id, connect_to) {
+        println!("Joined channel.");
+        info!("Joined channel.");
     } else {
         error!("Error joining the channel.");
     }

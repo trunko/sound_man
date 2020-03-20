@@ -1,3 +1,5 @@
+pub mod entrance;
+pub mod exit;
 pub mod join;
 pub mod leave;
 pub mod ping;

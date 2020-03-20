@@ -15,6 +15,8 @@ use log::{error, info};
 #[command]
 #[aliases("p")]
 fn play(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
+    println!();
+
     msg.delete(&ctx).expect("Unable to delete message.");
 
     let sound = String::from(args.rest());
@@ -53,6 +55,7 @@ fn play(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
             let mut path = match env::var("SOUND_PATH") {
                 Ok(path) => path,
                 Err(_) => {
+                    println!("No path defined for sound files.");
                     error!("No path defined for sound files.");
 
                     return Ok(());
@@ -60,6 +63,7 @@ fn play(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
             };
 
             let files = read_dir(&path).unwrap();
+            let mut found = false;
 
             for file in files {
                 let file = file.unwrap();
@@ -70,11 +74,16 @@ fn play(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
                     path.push_str(file[0]);
                     path.push_str(".");
                     path.push_str(file[1]);
+                    found = true;
                 }
             }
 
-            println!("{}", path);
-            info!("{}", path);
+            if !found {
+                println!("Invalid Sound: {}", sound);
+                info!("Invalid Sound: {}", sound);
+
+                return Ok(());
+            }
 
             let source = match voice::ffmpeg(path) {
                 Ok(source) => source,
@@ -86,10 +95,10 @@ fn play(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
             };
 
             handler.play_only(source);
-        }
 
-        println!("Playing: {}", sound);
-        info!("Playing: {}", sound);
+            println!("Playing: {}", sound);
+            info!("Playing: {}", sound);
+        }
     } else {
         println!("Not in a voice channel to play in.");
         info!("Not in a voice channel to play in.");

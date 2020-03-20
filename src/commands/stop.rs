@@ -12,6 +12,8 @@ use log::{error, info};
 #[command]
 #[aliases("s", "skip")]
 fn stop(ctx: &mut Context, msg: &Message) -> CommandResult {
+    println!();
+
     msg.delete(&ctx).expect("Unable to delete message.");
 
     let guild_id = match ctx.cache.read().guild_channel(msg.channel_id) {
