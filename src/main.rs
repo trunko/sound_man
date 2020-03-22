@@ -55,11 +55,9 @@ impl EventHandler for Handler {
     }
 }
 
-group!({
-    name: "general",
-    options: {},
-    commands: [entrance, exit, join, leave, play, ping, search, stop]
-});
+#[group]
+#[commands(entrance, exit, join, leave, play, ping, search, stop)]
+struct General;
 
 fn main() {
     kankyo::init().expect("Unable to load .env file.");
