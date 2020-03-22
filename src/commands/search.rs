@@ -1,4 +1,4 @@
-use crate::{check_msg, VoiceManager};
+use crate::VoiceManager;
 
 use serenity::client::Context;
 
@@ -12,22 +12,12 @@ use log::{error, info};
 
 #[command]
 #[aliases("yt", "youtube", "y")]
-fn search(ctx: &mut Context, msg: &Message, mut args: Args) -> CommandResult {
+fn search(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
     println!();
 
     msg.delete(&ctx).expect("Unable to delete message.");
 
-    let search = match args.single::<String>() {
-        Ok(search) => search,
-        Err(_) => {
-            check_msg(
-                msg.channel_id
-                    .say(&ctx.http, "Must provide a search to a video or audio."),
-            );
-
-            return Ok(());
-        }
-    };
+    let search = String::from(args.rest());
 
     let guild_id = match ctx.cache.read().guild_channel(msg.channel_id) {
         Some(channel) => channel.read().guild_id,

@@ -51,6 +51,9 @@ fn play(ctx: &mut Context, msg: &Message, args: Args) -> CommandResult {
             };
 
             handler.play_only(source);
+
+            println!("Playing: {}", sound);
+            info!("Playing: {}", sound);
         } else {
             let mut path = match env::var("SOUND_PATH") {
                 Ok(path) => path,
